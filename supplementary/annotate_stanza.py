@@ -34,3 +34,18 @@ def annotate_stanza(text: str):
         results.append(sent_info)
 
     return results
+
+from glob import glob
+import pandas as pd
+import json
+
+fp = "./data/" # Path containing the tsv files
+files = glob(fp+"*.tsv")
+
+for file in files:
+    df = pd.read_csv(file, sep="\t")
+    data = [str(x) for x in df[df.columns[1]].tolist()]
+    res = [full_stanza(x) for x in data]
+    sfn = os.path.splitext(file)
+    fn = sfn[0] + "_stanza" + sfn[1]
+    json.dump(res, open(fn, "w"))
